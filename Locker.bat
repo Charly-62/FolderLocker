@@ -2,23 +2,27 @@
 cls
 title Folder Locker
 
-:: Set folder name only once
+:: Set folder name
 set folderName=TestFolder
 set lockerName=%folderName%_Locker
 set passwordFile=hidden_password.txt
 
-:: Load password from file or set default if it doesn't exist
+:: Set default password if file does not exist
 if NOT EXIST "%passwordFile%" (
-    set /p="password" > "%passwordFile%"
+    echo password>"%passwordFile%"
     attrib +h +s "%passwordFile%"
 )
 
-set /p password=< "%passwordFile%"
-
+:: Check if folder is locked
 if EXIST "%lockerName%" goto UNLOCK
+
+:: Crate folder if it does not exist
 if NOT EXIST "%folderName%" goto CREATE_FOLDER
 
-echo Are you sure you want to lock the folder "%folderName%" (Y/N/S)? (Yes, No, Set new password)
+
+
+:MENU
+echo Do you want to lock the folder "%folderName%" (Y/N/S)? (Yes, No, Set new password)
 set /p "choice=-> "
 if /I "%choice%"=="Y" goto LOCK
 if /I "%choice%"=="N" goto END
@@ -29,8 +33,8 @@ goto END
 
 
 :SET_PASSWORD
-echo Set a password to lock/unlock the folder:
 set password=
+echo Set a password to lock/unlock the folder:
 set /p password="-> "
 
 if "%password%"=="" (
@@ -45,18 +49,24 @@ attrib +h +s "%passwordFile%"
 
 goto LOCK
 
+
+
 :LOCK
+set /p password=< "%passwordFile%"
 echo Folder will be locked with password: "%password%"
 ren "%folderName%" "%lockerName%"
 attrib +h +s "%lockerName%"
 echo Folder "%folderName%" locked successfully.
 goto END
 
-:UNLOCK
-:: Load password from file
-set /p password=< "%passwordFile%"
 
+
+:UNLOCK
+set /p password=< "%passwordFile%"
 set attempt=1
+
+goto TRY_UNLOCK
+
 :TRY_UNLOCK
 echo Enter the password to unlock the folder:
 set /p "userPass=-> "
@@ -64,7 +74,6 @@ if "%userPass%"=="%password%" (
     attrib -h -s "%lockerName%"
     ren "%lockerName%" "%folderName%"
     echo Folder "%folderName%" unlocked successfully.
-    goto END
 ) else (
     echo Invalid password. Attempt %attempt% of 3.
     set /a attempt=attempt+1
@@ -73,17 +82,22 @@ if "%userPass%"=="%password%" (
 )
 goto END
 
+
+
 :CREATE_FOLDER
 echo Folder "%folderName%" does not exist. Do you want to create it? (Y/N)
 set /p "createChoice=-> "
 if /I "%createChoice%"=="Y" (
     md "%folderName%"
     echo Folder "%folderName%" created successfully.
+    goto MENU
 ) else (
     echo Folder creation cancelled.
+    goto END
 )
-goto END
+
+
 
 :END
-ping -n 2 127.0.0.1 >nul
+ping -n 3 127.0.0.1 >nul
 exit
