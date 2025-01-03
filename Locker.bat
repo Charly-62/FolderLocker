@@ -30,16 +30,17 @@ goto END
 
 :SET_PASSWORD
 echo Set a password to lock/unlock the folder:
+set password=
 set /p password="-> "
 
-if password == "" (
+if "%password%"=="" (
     echo Password cannot be empty.
     goto SET_PASSWORD
 )
 
 :: Save new password to file
 attrib -h -s "%passwordFile%"
-set /p="%password%" > "%passwordFile%"
+echo %password%>"%passwordFile%"
 attrib +h +s "%passwordFile%"
 
 goto LOCK
