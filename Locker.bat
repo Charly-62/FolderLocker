@@ -3,7 +3,7 @@ cls
 title Folder Locker
 
 :: Set folder name
-set folderName=LockedFolder
+set "folderName=Locked Folder"
 set lockerName=%folderName%_Locker
 set passwordFile=hidden_password.txt
 
