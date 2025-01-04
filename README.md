@@ -1,10 +1,10 @@
-# Folder Locker
+# Folder Locker for Windows
 
 Folder Locker is a simple batch script to lock and unlock a folder with a password. It is designed for Windows systems and has been tested on Windows 11.
 
 ## Usage
 
-1. [Download Locker.bat](https://github.com/Charly-62/WindowsFolderLocker/raw/main/Locker.bat).
+1. Download [Locker.bat](https://github.com/Charly-62/WindowsFolderLocker/blob/main/Locker.bat).
 
 2. (Optional) Open the file with a text editor (e.g., Notepad) and check the sixth line:
 
